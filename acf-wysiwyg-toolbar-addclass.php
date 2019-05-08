@@ -11,20 +11,20 @@ function mytheme_acf_wysiwyg_helpers( $field ) {
 		$field_key = $field['key'];
 	?>
 	<script>
-		
+
 		( function( $ ) {
-            acf.add_filter('wysiwyg_tinymce_settings', function( mceInit, id, $field ) {
+	    acf.add_filter('wysiwyg_tinymce_settings', function( mceInit, id, $field ) {
 				$fieldKey = $field.data('key');
 
 				if ( $fieldKey == '<?php echo $field_key ?>' ) {
 					mceInit.body_class = 'homepage_wysiwyg';
 				}
-				
-				return mceInit;
-            });
 
-        } )( jQuery );
-		
+				return mceInit;
+	    });
+
+	} )( jQuery );
+
 	</script>
 	<?php
 	endif;
