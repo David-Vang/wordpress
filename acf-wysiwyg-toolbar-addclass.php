@@ -1,3 +1,4 @@
+<?php
 /**
  * Add ACF toolbar type as class to WYSIWYG body for backend styling
  */
@@ -29,3 +30,4 @@ function mytheme_acf_wysiwyg_helpers( $field ) {
 	endif;
 }
 add_action( 'acf/render_field/type=wysiwyg', 'mytheme_acf_wysiwyg_helpers', 10, 1 );
+?>
