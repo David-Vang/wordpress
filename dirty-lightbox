@@ -1,0 +1,17 @@
+<script>
+	( function( $ ) {
+		$('.video-link button').on('click', function(){
+			$youtubeID = $(this).data('video-id');
+			console.log($youtubeID);
+			var dirtyLightbox = '<div class="dirty-lightbox"></div>';
+			$(dirtyLightbox).hide().appendTo('body').fadeIn(500);
+		});
+		$('body').on('click', '.dirty-lightbox', function(){
+			console.log('hodor');
+			$(this).fadeOut(500, function() { $(this).remove(); } );
+		});
+		$(document).ready(function(){
+			
+		});
+	} )( jQuery );
+</script>
