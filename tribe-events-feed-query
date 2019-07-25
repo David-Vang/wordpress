@@ -1,0 +1,89 @@
+<?php 
+// Template for Event Calendar Feed
+// Query Tribe Events First with "featured" event category
+$args = array( 
+	'suppress_filters' => true,
+	'post_type' => 'tribe_events',
+	'meta_key'=>'_EventStartDate',
+	'orderby'=>'_EventStartDate',
+	'order'=>'ASC',
+	'post_status' => 'publish',
+	'posts_per_page' => -1,
+	'tax_query'=> array(
+		array(
+			'taxonomy' => 'tribe_events_cat',
+			'field' => 'slug',
+			'terms' => 'featured'
+		)
+	),
+	
+	'meta_query' => array(
+		array(
+			'key' => '_EventStartDate', 
+			'value' => date("Y-m-d"), 
+			'compare' => '>=', 
+			'type' => 'NUMERIC,' 
+		),
+	),
+	
+
+);
+$loop = new WP_Query( $args );
+?>
+
+
+<?php
+// Array Loop
+
+if ( $loop->have_posts() ) : ?>
+	<?php 
+	/* Time object definition */
+	class Time {
+		public $formattedStartTime;
+		public $formattedEndTime;
+
+		/* member functions */
+		public function formatTime($startTime, $endTime) {
+
+			if ( date('i', strtotime($startTime)) == 00 && date('a', strtotime($startTime)) == date('a', strtotime($endTime)) ) {
+				$this->formattedStartTime = date('g', strtotime($startTime));
+			} elseif ( date('a', strtotime($startTime)) != date('a', strtotime($endTime)) ) {
+				$this->formattedStartTime = date('ga', strtotime($startTime));
+			} else {
+				$this->formattedStartTime = date('g:ia', strtotime($startTime));
+			}
+
+			// check if end time is top of the hour
+			if ( date('i', strtotime($endTime)) == 00 ) {
+				$this->formattedEndTime = date('ga', strtotime($endTime));
+			} else {
+				$this->formattedEndTime = date('g:ia', strtotime($endTime));
+			}
+
+		}
+		public function printTime() {
+			echo $this->formattedStartTime . '-' . $this->formattedEndTime;
+		}
+
+	}
+	?>
+	<pre>
+		<?php while ( $loop->have_posts() ) : $loop->the_post();
+			
+		/* get the Date and Time from the post fields using tribe function */
+		$date = tribe_get_start_date( null, false, 'l, F j' );
+		$startDateTime = tribe_get_start_date(null, false, 'F j Y g:ia');
+		$endDateTime = tribe_get_end_date(null, false, 'F j Y g:ia');
+
+		/*  create time object */
+		$formattedTime = new Time;
+		$formattedTime->formatTime($startDateTime, $endDateTime);
+		?>
+		<item>
+			<date><?php echo $date ?></date>
+			<time><?php $formattedTime->printTime() ?></time>
+		</item>
+			
+		<?php endwhile; ?>
+	</pre>
+<?php endif; ?>
